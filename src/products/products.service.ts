@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { COPYFILE_FICLONE } from 'constants';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { Repository } from 'typeorm';
+import { Event } from 'src/events/entities/event.entity';
+import { Connection, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -11,6 +13,7 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly connection: Connection,
   ) {}
 
   findAll(paginationQuery: PaginationQueryDto) {
@@ -49,5 +52,30 @@ export class ProductsService {
   async remove(id: string) {
     const product = await this.findOne(id);
     return this.productRepository.remove(product);
+  }
+
+  async recommendProduct(product: Product) {
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      product.recommendations++;
+
+      const recommendEvent = new Event();
+      recommendEvent.name = 'recommend_product';
+      recommendEvent.type = 'product';
+      recommendEvent.payload = { productId: product.id };
+
+      await queryRunner.manager.save(product);
+      await queryRunner.manager.save(recommendEvent);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
