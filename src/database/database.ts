@@ -1,21 +1,14 @@
 import 'dotenv/config';
 
-const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD } = process.env;
-
-const port = +DB_PORT | 3306;
-
-export const dataBaseSettings = {
-  type: 'mysql',
-  host: DB_HOST,
-  port: port,
-  username: DB_DATABASE,
-  password: DB_USER,
-  database: DB_PASSWORD,
-  autoLoadEntities: true,
-  synchronize: true,
+export const databaseSettings = {
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT) | 3306,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 };
 
 // TODO: quando estiver em produção precisa desativar o synchronize
 // synchronize: ele certifica-se que nosso TypeOrm entities vão ser igual ao do banco
 
-export default dataBaseSettings;
+export default databaseSettings;
