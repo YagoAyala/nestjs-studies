@@ -8,6 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -17,10 +18,8 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(@Query() paginationQuery) {
-    console.log(paginationQuery);
-    //const { limit, offset } = paginationQuery;
-    return this.productsService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.productsService.findAll(paginationQuery);
   }
 
   @Get(':id')
