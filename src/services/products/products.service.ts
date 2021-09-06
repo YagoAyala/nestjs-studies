@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { Event } from 'src/events/entities/event.entity';
 import { Connection, Repository } from 'typeorm';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
+import { CreateProductDto } from '../../dto/products/create-product.dto';
+import { UpdateProductDto } from '../../dto/products/update-product.dto';
+import { Product } from '../../entities/products/product.entity';
 
 @Injectable()
 export class ProductsService {
