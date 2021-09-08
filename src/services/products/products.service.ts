@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { Event } from 'src/events/entities/event.entity';
+import { Event } from 'src/entities/events/event.entity';
 import { Connection, Repository } from 'typeorm';
 import { CreateProductDto } from '../../common/dto/products/create-product.dto';
 import { UpdateProductDto } from '../../common/dto/products/update-product.dto';
@@ -18,9 +18,8 @@ export class ProductsService {
   findAll(paginationQuery: PaginationQueryDto) {
     const { limit, offset } = paginationQuery;
     return this.productRepository.find({
-      // TODO: SE o cara do curso nao ensinar consertar isso, tenta vc idiota se nao conseguir pls apagar
-      skip: offset,
       take: limit,
+      skip: offset,
     });
   }
 
